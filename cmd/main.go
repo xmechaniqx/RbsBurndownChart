@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RbsBurndownChart/cmd/config"
 	"bufio"
 	"fmt"
 	"io/ioutil"
@@ -25,6 +26,20 @@ func main() {
 	}
 
 }
+func runServer() {
+
+}
+func parseParams() configPath {
+	var i configPath
+	return i
+}
+
+func loadConfig() (*config.Config, error) {
+	return nil, nil
+}
+
+///////////////////////////////////////////////////////
+
 func readLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
