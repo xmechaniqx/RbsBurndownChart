@@ -12,6 +12,6 @@ func NewDBDeveloper(connSpec string) *DBDeveloper {
 func (db *DBDeveloper) Read(devLogin string) (*types.Developer, error) {
 	return nil, nil
 }
-func ReadAll(projectId int64) ([]types.Developer, error) {
+func (db *DBDeveloper) ReadAll(projectId int64) ([]types.Developer, error) {
 	return nil, nil
 }
