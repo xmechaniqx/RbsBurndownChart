@@ -8,6 +8,7 @@ type WebServiceTasks struct {
 	client *http.Client
 }
 
+//New() - функция получения списка задач из веб сервиса
 func New(host string, port string) *WebServiceTasks {
 	return nil
 }

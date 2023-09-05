@@ -13,6 +13,6 @@ func New(config *config.Config) *taskReaderFactory {
 	return nil
 }
 
-func (tr *taskReaderFactory) Make(project types.Project) taskReader {
+func (tr *taskReaderFactory) Make(project *types.Project) taskReader {
 	return nil
 }

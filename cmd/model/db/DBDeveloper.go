@@ -1,5 +1,11 @@
 package db
 
+import (
+	"RbsBurndownChart/cmd/types"
+
+	"github.com/jackc/pgx"
+)
+
 type DBDeveloper struct {
 	connSpec string
 	db       *pgx.Conn

@@ -42,7 +42,7 @@ var chart=new Chart(ctx, {
         label: 'RBS Burndown chart',
         data: [12, 19, 3, 5, 2, 3],
         borderWidth: 2,
-        borderColor: 'blue',
+        borderColor: 'red',
         backgroundColor: [
           'rgba(100, 50, 230, 1)'],
         tension:0,
