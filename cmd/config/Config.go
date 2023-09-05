@@ -2,6 +2,8 @@ package config
 
 import "flag"
 
+// Объект, реализующий чтение файла конфигурации.
+// Файл содержит параметры для соединения с базой данных и параметры для соединения с веб-сервисом.
 type Config struct {
 	DBConnSpec  string
 	ServiceHost string
@@ -11,13 +13,15 @@ type Config struct {
 var conf *Config
 var configPath = flag.String("conf", "", "path of conf")
 
+//Load() - функция обращается к файлу и записывает соответствующее объекту Config содержимое в структуру.
 func Load(configPath string) error {
 	//
 	//
 	conf = &Config{}
 	return nil
 }
-func Read() Config {
 
+//() - функция реализует чтение данных из структуры conf
+func Read() Config {
 	return *conf
 }

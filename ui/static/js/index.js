@@ -9,10 +9,12 @@ var labels = [];
 function daysInMonth (month, year) {
     return new Date(year, month, 0).getDate();
 }
-for (i=0;i<daysInMonth(9,2023);i++) {
+  var today = new Date();
+var dd = String(today.getDate()).padStart(1,'0');
+console.log(dd)
+for (i=3;i<31;i++) {
     labels.push(i+' '+month)
-    }
-
+    } 
 //weekend today or not    
 function isWeekend(date = new Date.now()) {
         return date.getDay() === 6 || date.getDay() === 0;
@@ -20,7 +22,6 @@ function isWeekend(date = new Date.now()) {
       console.log(isWeekend(date),date);
       const d1 = new Date('2022-09-24');
       console.log("today",d1,date); 
-      
       console.log(d1.getDay()); 
 
 
@@ -30,8 +31,8 @@ var chart=new Chart(ctx, {
   data: {
     labels: labels,
     datasets: [{
-      label: 'RBS Burndown chart plan',
-      data: [45,0],
+      label: 'Antonenko Roman',
+      data: [48,35,29],
       borderWidth: 2,
       borderColor: 'blue',
       backgroundColor: [
@@ -39,12 +40,12 @@ var chart=new Chart(ctx, {
       tension:0,
       fill: false
     },{
-        label: 'RBS Burndown chart',
-        data: [12, 19, 3, 5, 2, 3],
+        label: 'task "Burndown chart"',
+        data: [48, 42, 36, 30, 24, 18,12,6,0],
         borderWidth: 2,
         borderColor: 'red',
         backgroundColor: [
-          'rgba(100, 50, 230, 1)'],
+          'rgba(252, 86, 86, 1)'],
         tension:0,
         fill: false
       }
