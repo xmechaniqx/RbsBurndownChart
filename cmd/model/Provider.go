@@ -15,7 +15,13 @@ type Provider struct {
 
 //NewProvider() - функция обработчик структуры Config, реализующая доступ к базе данных согласно файлу config.ini
 func NewProvider(config *config.Config) *Provider {
-	return nil
+
+	myProvider := &Provider{
+		projects: db.NewDBProject(config.DBConnSpec),
+		devs:     db.NewDBDeveloper(config.DBConnSpec),
+	}
+
+	return myProvider
 }
 
 //MakeBurndownChart() - функция получения структуры данных необходимых для построения графика согласно логину пользователя

@@ -10,9 +10,12 @@ type taskReaderFactory struct {
 }
 
 func New(config *config.Config) *taskReaderFactory {
-	return nil
+	return &taskReaderFactory{
+		config: config,
+	}
 }
 
 func (tr *taskReaderFactory) Make(project *types.Project) taskReader {
+
 	return nil
 }

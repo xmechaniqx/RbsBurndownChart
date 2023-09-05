@@ -1,5 +1,5 @@
 const ctx = document.getElementById('myChart');
-const date = new window.Date();  // 2009-11-10
+const date = new window.Date();  
 const month = date.toLocaleString('default', { month: 'short' });
 const day = date.toLocaleString('default', { day: "numeric" });
 console.log(day)

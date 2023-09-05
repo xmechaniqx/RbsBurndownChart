@@ -4,6 +4,7 @@ import (
 	"RbsBurndownChart/cmd/config"
 	"bufio"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ func main() {
 	var curPath string
 	var sumResult int
 	files, err := ioutil.ReadDir(path)
+	fmt.Println(files)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,19 +27,20 @@ func main() {
 		sumResult = takePathGiveSum(curPath)
 		fmt.Println("This is result of sum for", file.Name(), "-", sumResult)
 	}
+	runServer()
 
+	//
+
+	//
 }
 
 //responseHandler() - функция обработки ответа
 func responseHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	root := r.URL.Query().Get("chart")
-	// flag?root=/home/username/node_modules/
-	defaulPath := "/home/username/node_modules/"
-	if root == "/" {
-		root = defaulPath
-		fmt.Println("defaulRoot")
-	}
+	var tpl = template.Must(template.ParseFiles("index.html"))
+	tpl.Execute(w, nil)
+	login := r.URL.Query().Get("login")
+	fmt.Println(login)
 }
 
 //runServer() - функция запуска сервера
@@ -45,7 +48,6 @@ func runServer() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/chart", responseHandler)
-
 	log.Println("Запуск веб-сервера на http://127.0.0.1:4000")
 	//Определение файлов необходимых для работы сервера
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
@@ -55,10 +57,10 @@ func runServer() {
 }
 
 //parseParams() - функция обработки файла конфигурации
-func parseParams() configPath {
-	var i configPath
-	return i
-}
+// func parseParams() configPath {
+// var i configPath
+// return i
+// }
 
 //loadConfig() - функция загрузки файла конфигурации
 func loadConfig() (*config.Config, error) {
