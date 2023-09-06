@@ -21,7 +21,7 @@ func Load(configPath string) error {
 	return nil
 }
 
-//() - функция реализует чтение данных из структуры conf
+//Read() - функция реализует чтение данных из структуры Config.
 func Read() Config {
 	return *conf
 }

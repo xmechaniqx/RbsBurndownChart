@@ -6,6 +6,7 @@ import (
 	"RbsBurndownChart/cmd/types"
 )
 
+// Объект, реализующий чтение из базы данных параметров имплементирующих интерфейсу taskReader.
 type Provider struct {
 	tasks       taskReader
 	projects    *db.DBProject
@@ -31,6 +32,7 @@ func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, err
 
 //readUser() - функция чтения из базы данных информации о пользователе
 func (p *Provider) readUser(devLogin string) (*types.Developer, error) {
+
 	return nil, nil
 }
 

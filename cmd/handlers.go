@@ -12,11 +12,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
+	//Чтение файлов необходимых для отображения страницы HTML
 	files := []string{
 		"./ui/html/index.html",
 	}
-
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())

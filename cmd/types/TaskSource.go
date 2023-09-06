@@ -1,5 +1,6 @@
 package types
 
+// Объект данных содержащий данные о способе получения задач для проекта.
 type TaskSource int8
 
 const (

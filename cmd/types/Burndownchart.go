@@ -1,8 +1,7 @@
 package types
 
+// Объект данных содержащий данные о разработчике, и объекте Dataset из пакета types.
 type Burndownchart struct {
-	Project      Project
-	Developer    Developer
-	TasksCostSum int64
-	WorkingHours map[string]int64
+	Developer Developer
+	Charts    []Dataset
 }
