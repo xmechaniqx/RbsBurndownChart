@@ -4,6 +4,7 @@ import (
 	"RbsBurndownChart/cmd/config"
 	"RbsBurndownChart/cmd/model/db"
 	"RbsBurndownChart/cmd/types"
+	"fmt"
 )
 
 // Объект, реализующий чтение из базы данных параметров имплементирующих интерфейсу taskReader.
@@ -12,32 +13,43 @@ type Provider struct {
 	projects    *db.DBProject
 	devs        *db.DBDeveloper
 	currentUser *types.Developer
+	config      *config.Config
 }
 
 //NewProvider() - функция обработчик структуры Config, реализующая доступ к базе данных согласно файлу config.ini
-func NewProvider(config *config.Config) *Provider {
-
-	myProvider := &Provider{
-		projects: db.NewDBProject(config.DBConnSpec),
-		devs:     db.NewDBDeveloper(config.DBConnSpec),
+func New(config *config.Config) *Provider {
+	return &Provider{
+		config: config,
 	}
-
-	return myProvider
 }
 
 //MakeBurndownChart() - функция получения структуры данных необходимых для построения графика согласно логину пользователя
 func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, error) {
+
+	// myDataset:=types.Dataset{
+	// 	Project: developerObject.,
+	// }
 	return nil, nil
 }
 
 //readUser() - функция чтения из базы данных информации о пользователе
 func (p *Provider) readUser(devLogin string) (*types.Developer, error) {
-
-	return nil, nil
+	developerMake := db.DBDeveloper(*db.NewDBDeveloper(p.config.DBConnSpec))
+	developerObject, err := developerMake.Read(devLogin)
+	if err != nil {
+		fmt.Println(`Ошибка чтения параметра "Developer" из базы данных`)
+	}
+	return developerObject, err
 }
 
 //readProject() - функция чтения из базы данных информации о проекте
 func (p *Provider) readProject(projectId int64) (*types.Project, error) {
+	developerMake := db.DBProject(*db.NewDBProject(p.config.DBConnSpec))
+	developerObject, err := developerMake.Read(devLogin)
+	if err != nil {
+		fmt.Println(`Ошибка чтения параметра "Developer" из базы данных`)
+	}
+	return developerObject, err
 	return nil, nil
 }
 
