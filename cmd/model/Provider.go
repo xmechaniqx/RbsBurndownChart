@@ -61,6 +61,7 @@ func (p *Provider) readWorkingHours(devs []types.Developer) (map[string]int64, e
 	return nil, nil
 }
 
+//Интерфейс определяющий задачи с каким расположением будут переданы для реализации в пакете Provider
 type taskReader interface {
 	Read(p types.Project) ([]types.Task, error)
 }
