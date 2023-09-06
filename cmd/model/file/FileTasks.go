@@ -13,8 +13,8 @@ type FileTasks struct {
 
 // New() инициализирует FileTasks, и возвращает указатель на него.
 // filePath задаёт путь к файлу со списком задач.
-func New(filePath string) (*FileTasks, error) {
-	return nil, nil
+func New(filePath string) *FileTasks {
+	return &FileTasks{filePath: filePath}
 }
 
 // Read() реализует чтение списка задач из текстового файла, заданного

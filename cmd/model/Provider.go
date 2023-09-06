@@ -62,5 +62,5 @@ func (p *Provider) readWorkingHours(devs []types.Developer) (map[string]int64, e
 }
 
 type taskReader interface {
-	Read(p *types.Project) ([]types.Task, error)
+	Read(p types.Project) ([]types.Task, error)
 }

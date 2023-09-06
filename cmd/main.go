@@ -3,9 +3,8 @@ package main
 import (
 	"RbsBurndownChart/cmd/config"
 	"bufio"
+	"flag"
 	"fmt"
-	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,31 +13,16 @@ import (
 )
 
 func main() {
-	path := "./tasks/"
-	var curPath string
-	var sumResult int
-	files, err := ioutil.ReadDir(path)
-	fmt.Println(files)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, file := range files {
-		curPath = path + file.Name()
-		sumResult = takePathGiveSum(curPath)
-		fmt.Println("This is result of sum for", file.Name(), "-", sumResult)
-	}
+	loadConfig()
 	runServer()
 
-	//
-
-	//
 }
 
 //responseHandler() - функция обработки ответа
 func responseHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	var tpl = template.Must(template.ParseFiles("index.html"))
-	tpl.Execute(w, nil)
+	// var tpl = template.Must(template.ParseFiles("index.html"))
+	// tpl.Execute(w, nil)
 	login := r.URL.Query().Get("login")
 	fmt.Println(login)
 }
@@ -56,15 +40,21 @@ func runServer() {
 	log.Fatal(err)
 }
 
-//parseParams() - функция обработки файла конфигурации
-// func parseParams() configPath {
-// var i configPath
-// return i
-// }
-
 //loadConfig() - функция загрузки файла конфигурации
 func loadConfig() (*config.Config, error) {
-	return nil, nil
+	err := config.Load(*parseParams())
+	if err != nil {
+		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
+	}
+	myConfig := config.Read()
+	return &myConfig, err
+}
+
+//parseParams() - функция получения расположения файла conf.ini. Задается с помощью флага -p в терминале перед запуском приложения.
+func parseParams() (configPath *string) {
+	configPath = flag.String("p", "", "path of src")
+	flag.Parse()
+	return configPath
 }
 
 ///////////////////////////////////////////////////////
@@ -83,6 +73,19 @@ func readLines(path string) ([]string, error) {
 		lines = append(lines, scanner.Text())
 	}
 	return lines, scanner.Err()
+	// path := "./tasks/"
+	// var curPath string
+	// var sumResult int
+	// files, err := ioutil.ReadDir(path)
+	// fmt.Println(files)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// for _, file := range files {
+	// 	curPath = path + file.Name()
+	// 	sumResult = takePathGiveSum(curPath)
+	// 	fmt.Println("This is result of sum for", file.Name(), "-", sumResult)
+	// }
 }
 
 //Функция вычисления суммы для экземпляра задачи

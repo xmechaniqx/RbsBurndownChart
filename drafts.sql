@@ -4,7 +4,7 @@ CREATE DATABASE burndown_db;
 --Создаем таблицу в которой хранятся задачи для первой группы разбработки 'website'
 CREATE TABLE t_task (
     c_id SERIAL PRIMARY KEY,
-    c_title VARCHAR(250),
+    c_title VARCHAR(250) NOT NULL,
     c_cost SMALLINT,
     COMMENT ON COLUMN t_task.c_id IS 'ID',
     COMMENT ON COLUMN t_task.c_title IS 'Наименование задачи',
@@ -13,10 +13,10 @@ CREATE TABLE t_task (
 --Создаем таблицу которая будет хранить данных о проектах и их расположении
 CREATE TABLE t_project (
     c_id SMALLSERIAL PRIMARY KEY,
-    c_name VARCHAR(100),
-    c_sprint_start_date DATE,
+    c_name VARCHAR(100) NOT NULL,
+    c_sprint_start_date DATE NOT NULL,
     fk_tasks_source SMALLINT,
-    c_task_list_file_path TEXT,
+    c_task_list_file_path TEXT NOT NULL,
     FOREIGN KEY fk_tasks_source REFERENCES t_ref_tasks_source (c_id),
     COMMENT ON COLUMN t_project.c_id IS 'ID',
     COMMENT ON COLUMN t_project.c_name IS 'Название проекта',
@@ -45,9 +45,9 @@ CREATE TABLE toc_project_developer (
 --Создаем таблицу со списком сотрудников
 CREATE TABLE t_developer (                                                      
     c_id SMALLSERIAL PRIMARY KEY,                                                               
-    c_lastname VARCHAR(70),                                          
-    c_firstname VARCHAR(50),                                          
-    c_login VARCHAR(25)
+    c_lastname VARCHAR(70) NOT NULL,                                          
+    c_firstname VARCHAR(50) NOT NULL,                                          
+    c_login VARCHAR(25) NOT NULL,
     fk_position SMALLINT,
     c_mon_hour SMALLINT,
     c_tue_hour SMALLINT,                 
@@ -73,38 +73,7 @@ CREATE TABLE t_developer (
 --Создаем таблицу с перечнем должностей сотрудников
 CREATE TABLE t_ref_position (
     c_id SMALLSERIAL PRIMARY KEY,
-    c_name VARCHAR(100),
+    c_name VARCHAR(100) NOT NULL,
     COMMENT ON COLUMN t_ref_position.c_id IS 'ID',
     COMMENT ON COLUMN t_ref_position.c_name IS 'Должность'
 )
---Заполняем таблицу задач t_task 
-INSERT INTO t_task VALUES ('Создание и конфигурация репозитория', 1)
-INSERT INTO t_task VALUES ('Разработка макета веб-страницы', 8)
-INSERT INTO t_task VALUES ('Перенос макета в рабочий проект', 2)
-INSERT INTO t_task VALUES ('Запуск макета на тестовом сервере с тестовыми данными', 12)
-INSERT INTO t_task VALUES ('Подключение веб-интерфейса к БД', 10)
-INSERT INTO t_task VALUES ('Запуск веб-интерфейса и отладка', 15)
-INSERT INTO t_task VALUES ('Настройка визуализации параметров полученных из БД', 5)
-INSERT INTO t_task VALUES ('Сборка Webpack', 14)
-INSERT INTO t_task VALUES ('Тестирование', 12)
-INSERT INTO t_task VALUES ('Отладка', 12)
---Заполняем таблицу t_ref_tasks_source
-INSERT INTO t_ref_tasks_source VALUES ('Data_base')          "нумерация для названий проектов???"
-INSERT INTO t_ref_tasks_source VALUES ('File')    
-INSERT INTO t_ref_tasks_source VALUES ('Web')             
---Заполняем таблицу t_project
-INSERT INTO t_project VALUES ('website', '2023-09-04', 1, 't_task')   ???
-INSERT INTO t_project VALUES ('robointellect', '2023-09-04', 2, '/home/username/go/src/RbsBurndownChart/tasks/group_2.txt')
-INSERT INTO t_project VALUES ('repka', '2023-09-04', 3, 'localhost:4000')
---Заполняем таблицу t_ref_position
-INSERT INTO t_ref_position VALUES ('stager')
-INSERT INTO t_ref_position VALUES ('developer')
-INSERT INTO t_ref_position VALUES ('architect')
---Заполняем таблицу t_developer
-INSERT INTO t_developer VALUES ('Ivanov', 'Petr', 'pivanov', 1, 4, 6, 2, 4, 8, 0, 0)
-INSERT INTO t_developer VALUES ('Petrov', 'Ivan', 'ipetrov', 1, 6, 2, 6, 8, 8, 0, 0)
-INSERT INTO t_developer VALUES ('Sidorov','Nikolay', 'nsidorov', 1, 8, 8, 6, 4, 6, 0, 0)
-INSERT INTO t_developer VALUES ('Chernetsov','Gennadiy', 'gchernetsov', 2, 8, 8, 6, 8, 6, 0, 0)
-INSERT INTO t_developer VALUES ('Dubovickiy','Andrey', 'adubovickiy', 2, 8, 8, 7, 6, 8, 0, 0)
-INSERT INTO t_developer VALUES ('Sidorov','Nikolay', 'nsidorov', 3, 8, 8, 8, 8, 8, 0, 0)
-;
