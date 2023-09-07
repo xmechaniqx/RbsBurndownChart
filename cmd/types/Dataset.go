@@ -3,7 +3,7 @@ package types
 // Объект данных содержащий данные о проекте, сумму времени (в часах) на выполнение проекта,
 // и отображение расчетных часов работы в соответствии с днями недели.
 type Dataset struct {
-	Project      Project
-	TasksCostSum int64
-	WorkingHours map[string]int64
+	Project      Project          //Project принимает значение объекта Project из пакета types
+	TasksCostSum int64            //Общая стоимость времени на выполнение задач в зависимости от проекта
+	WorkingHours map[string]int64 //Отображение суммарных часов производительности всей команды проекта по дням недели
 }

@@ -32,7 +32,7 @@ var chart=new Chart(ctx, {
     labels: labels,
     datasets: [{
       label: 'Antonenko Roman',
-      data: [48,35,29],
+      data: [48,35,29,15],
       borderWidth: 2,
       borderColor: 'blue',
       backgroundColor: [
