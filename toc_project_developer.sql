@@ -37,3 +37,58 @@ INSERT INTO toc_project_developer VALUES (default,9,5);
 INSERT INTO toc_project_developer VALUES (default,9,6);
 INSERT INTO toc_project_developer VALUES (default,10,4);
 INSERT INTO toc_project_developer VALUES (default,10,6);
+
+
+
+
+
+-- SELECT proj.c_id, proj.c_name, CAST(proj.c_sprint_start_date AS TEXT),tref.c_name, proj.c_task_list_file_path
+-- 	FROM public.t_project AS proj
+-- 	LEFT JOIN t_ref_tasks_source AS tref ON proj.fk_tasks_source = tref.c_id
+-- 	WHERE proj.c_id=8
+
+-- SELECT dev.c_id, toc.fk_project, dev.c_lastname, dev.c_firstname, dev.c_login, 
+-- tref.c_name
+-- FROM t_developer AS dev
+-- LEFT JOIN t_ref_position AS tref
+-- ON dev.fk_position = tref.c_id
+-- LEFT JOIN toc_project_developer AS toc
+-- ON dev.c_id = toc.fk_developer
+-- WHERE dev.c_login = 'gchernetsov'
+
+-- SELECT dev.c_id, toc.fk_project, dev.c_lastname, dev.c_firstname, dev.c_login, 
+-- tref.c_name,  dev.c_mon_hour, dev.c_tue_hour, dev.c_wed_hour,
+-- dev.c_thu_hour, dev.c_fri_hour, dev.c_sat_hour, dev.c_sun_hour
+-- FROM t_developer AS dev
+-- LEFT JOIN t_ref_position AS tref
+-- ON dev.fk_position = tref.c_id
+-- LEFT JOIN toc_project_developer AS toc
+-- ON dev.c_id = toc.fk_developer
+-- WHERE dev.c_login = 'gchernetsov'
+
+-- SELECT proj.c_id, proj.c_name, CAST(proj.c_sprint_start_date AS TEXT), 
+-- tref.c_name, proj.c_task_list_file_path 
+-- FROM public.t_project AS proj 
+-- LEFT JOIN t_ref_tasks_source AS tref 
+-- ON proj.fk_tasks_source = tref.c_id 
+-- WHERE proj.c_id=8
+
+-- SELECT * FROM t_developer
+
+-- SELECT dev.c_id, toc.fk_project, dev.c_lastname, dev.c_firstname, dev.c_login, 
+-- tref.c_name,  dev.c_mon_hour, dev.c_tue_hour, dev.c_wed_hour,
+-- dev.c_thu_hour, dev.c_fri_hour, dev.c_sat_hour, dev.c_sun_hour
+-- FROM t_developer AS dev
+-- LEFT JOIN t_ref_position AS tref
+-- ON dev.fk_position = tref.c_id
+-- LEFT JOIN toc_project_developer AS toc
+-- ON dev.c_id = toc.fk_developer
+-- WHERE toc.fk_project =8
+
+-- SELECT dev.c_login
+-- FROM t_developer AS dev
+-- LEFT JOIN t_ref_position AS tref
+-- ON dev.fk_position = tref.c_id
+-- LEFT JOIN toc_project_developer AS toc
+-- ON dev.c_id = toc.fk_developer
+-- WHERE toc.fk_project =8

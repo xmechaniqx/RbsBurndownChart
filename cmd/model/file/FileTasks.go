@@ -2,6 +2,12 @@ package file
 
 import (
 	"RbsBurndownChart/cmd/types"
+	"bufio"
+	"fmt"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // Объект, реализующий чтение списка задач из текстового файла.
@@ -26,15 +32,45 @@ func New(filePath string) *FileTasks {
 // задача N (X)
 // т.е. каждая новая задача на отдельной строке, а стоимость задачи указывается целым числом в круглых скобках.
 func (tr *FileTasks) Read(p types.Project) ([]types.Task, error) {
-	mockTasks := []types.Task{
-		types.Task{
-			Title: "Dummy task 1",
-			Cost:  8,
-		},
-		types.Task{
-			Title: "Dummy task 2",
-			Cost:  3,
-		},
+	return readLines(p.TaskListFilePath)
+}
+
+//Функция построчного считывания и форматирования согласно объекту .txt файла задач с последующим формированием массива по каждой строке
+func readLines(path string) ([]types.Task, error) {
+	//Инициализируем переменные которые будут записаны в структуру
+	var line string
+	var resInt int
+	//Инициализируем структуру и массив структур
+	arrResult := []types.Task{}
+	result := types.Task{}
+	//Чтение файла
+	file, err := os.Open(path)
+	if err != nil {
+		return []types.Task{}, err
 	}
-	return mockTasks, nil
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line = scanner.Text()
+		//Форматируем полученную строку чтобы вычленить время и удалить лишние символы
+		rex := regexp.MustCompile(`\(([^)]+)\)`)
+		out := rex.FindAllStringSubmatch(line, -1)
+		line = strings.TrimRight(line, "()+1234567890")
+		line = strings.TrimLeft(line, ".()+1234567890")
+		//Приводим полученное число из строки в int
+		for _, i := range out {
+			resInt, err = strconv.Atoi(i[1])
+			if err != nil {
+				fmt.Println("Ошибка конвертации STRING to INT")
+			}
+		}
+		//Записываем полученные значения в структуру
+		result = types.Task{
+			Title: line,
+			Cost:  int64(resInt),
+		}
+		//Записываем полученную структуру в массив
+		arrResult = append(arrResult, result)
+	}
+	return arrResult, err
 }

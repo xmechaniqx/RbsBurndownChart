@@ -29,7 +29,7 @@ func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, err
 
 	//Чтение данных сотрудника из БД
 	developerObject, err := p.devs.Read(devLogin)
-	fmt.Println("developerObject", developerObject)
+	fmt.Println("developerObject.MakeBurndownChart", developerObject)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка чтения объекта \"Developer\" из базы данных: %v", err)
 	}
@@ -57,7 +57,7 @@ func (p *Provider) makeDataSet(projectId int64) (*types.Dataset, error) {
 
 	//Чтение проекта из БД
 	project, err := p.projects.Read(projectId)
-	fmt.Println("project is", project)
+	// fmt.Println("project is", project)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка чтения объекта \"Project\" из базы данных: %v", err)
 	}

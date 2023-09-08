@@ -53,7 +53,7 @@ CREATE TABLE t_project (
     fk_tasks_source SMALLINT REFERENCES t_ref_tasks_source (c_id),
     c_task_list_file_path TEXT NOT NULL);
 	
-	
+	ALTER TABLE t_task ADD COLUMN fk_project SMALLINT REFERENCES t_project (c_id) ;
     
     COMMENT ON COLUMN t_project.c_id IS 'ID';
     COMMENT ON COLUMN t_project.c_name IS 'Название проекта';

@@ -23,7 +23,7 @@ func Load(configPath string) error {
 	}
 	cfg, err := ini.Load(configPath)
 	if err != nil {
-		fmt.Println("CONFIG - Ошибка чтения файла config или пути configPath")
+		fmt.Println("CONFIG - Ошибка чтения файла config или пути configPath", err)
 	}
 	conf = &Config{
 		DBConnSpec:  cfg.Section("").Key("DBConnSpec").String(),

@@ -17,25 +17,20 @@ func main() {
 }
 
 //responseHandler() - функция обработки ответа
-func responseHandler(w http.ResponseWriter, r *http.Request) {
+func chartHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	// var tpl = template.Must(template.ParseFiles("index.html"))
 	// tpl.Execute(w, nil)
 	login := r.URL.Query().Get("login")
 
-	fmt.Println(login)
-	config, err := loadConfig()
-	fmt.Println("full config?", *config)
-	if err != nil {
-		fmt.Errorf("ошибка чтения объекта \"Developer\" из базы данных: %v", err)
-	}
-	model := model.New(config)
-
+	config := config.Read()
+	fmt.Println(&config)
+	model := model.New(&config)
 	returner, err := model.MakeBurndownChart(login)
 	if err != nil {
-		fmt.Errorf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v", err)
+		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
 	}
-	fmt.Println(returner)
+	// fmt.Println(returner)
 	output, err := json.MarshalIndent(returner, "", "\t")
 	if err != nil {
 		fmt.Println("Can't Marshall JSON")
@@ -48,24 +43,31 @@ func responseHandler(w http.ResponseWriter, r *http.Request) {
 func runServer() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
-	mux.HandleFunc("/chart", responseHandler)
+	mux.HandleFunc("/chart", chartHandler)
 	log.Println("Запуск веб-сервера на http://127.0.0.1:4000")
 	//Определение файлов необходимых для работы сервера
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// makeConfig, err := loadConfig()
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "Ошибка чтения файла конфигурации: %v\n", err)
+	// 	os.Exit(1)
+	// }
 }
 
 //loadConfig() - функция загрузки файла конфигурации
-func loadConfig() (*config.Config, error) {
-	err := config.Load(parseParams())
-	if err != nil {
-		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
-	}
-	config := config.Read()
-	return &config, err
-}
+// func loadConfig() (*config.Config, error) {
+// 	err := config.Load(parseParams())
+// 	if err != nil {
+// 		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
+// 	}
+// 	config := config.Read()
+// 	return &config, err
+// }
 
 //parseParams() - функция получения расположения файла conf.ini. Задается с помощью флага -p в терминале перед запуском приложения.
 func parseParams() string {

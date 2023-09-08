@@ -28,7 +28,7 @@ func factory(config *config.Config) *taskReaderFactory {
 func (tr *taskReaderFactory) Make(project *types.Project) taskReader {
 	switch {
 	case project.TasksSource == types.File:
-		return file.New("filepath from, db")
+		return file.New(project.TaskListFilePath)
 	case project.TasksSource == types.DB:
 		return db.NewDBTasks(tr.config.DBConnSpec)
 	case project.TasksSource == types.Service:

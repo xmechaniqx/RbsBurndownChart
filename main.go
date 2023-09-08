@@ -1,35 +1,59 @@
 package main
 
 import (
-	"context"
+	"bufio"
 	"fmt"
 	"os"
-
-	"github.com/jackc/pgx"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 func main() {
-
-	// urlExample := "postgres://username:password@localhost:5432/database_name"
-	conn, err := pgx.Connect(context.Background(), "postgres://admin:1234@localhost:5432/burndown_db")
+	res, err := readLines("/home/username/go/src/RbsBurndownChart/tasks/group_1.txt")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		return
 	}
-	defer conn.Close(context.Background())
-
-	var name int64
-	var weight string
-	err = conn.QueryRow(context.Background(), "SELECT c_id, c_name FROM public.t_ref_tasks_source WHERE c_id=$1", 30).Scan(&name, &weight)
+	fmt.Printf("%+v\n", res)
+}
+func readLines(path string) ([]Task, error) {
+	var line string
+	var resInt int
+	arrResult := []Task{}
+	result := Task{}
+	file, err := os.Open(path)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
+		return []Task{}, err
+	}
+	defer file.Close()
+
+	// var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line = scanner.Text()
+		rex := regexp.MustCompile(`\(([^)]+)\)`)
+		out := rex.FindAllStringSubmatch(line, -1)
+		line = strings.TrimRight(line, "()+1234567890")
+		line = strings.TrimLeft(line, ".()+1234567890")
+		for _, i := range out {
+			resInt, err = strconv.Atoi(i[1])
+			if err != nil {
+				fmt.Println("Ошибка конвертации STRING to INT")
+			}
+		}
+
+		result = Task{
+			Title: line,
+			Cost:  int64(resInt),
+		}
+		arrResult = append(arrResult, result)
 	}
 
-	fmt.Println(name, weight)
+	// fmt.Println(sumTaskHoursArr, sumResult)
+	return arrResult, err
 }
 
-type taskSource struct {
-	id   int64
-	name string
+type Task struct {
+	Title string
+	Cost  int64
 }
