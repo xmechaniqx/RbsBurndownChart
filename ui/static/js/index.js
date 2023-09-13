@@ -1,3 +1,9 @@
+// var currentLocation = window.location;
+// var Url=window.location.href;
+// console.log(Url)
+// fnRequest(Url) 
+var request=document.addEventListener("DOMContentLoaded", XMLHttpRequest(login));
+
 const ctx = document.getElementById('myChart');
 const date = new window.Date();  
 const month = date.toLocaleString('default', { month: 'short' });
@@ -69,3 +75,43 @@ var chart=new Chart(ctx, {
     }
   },
 });
+
+function fnRequest(url) {
+  var req = new XMLHttpRequest();
+  req.addEventListener("load", renderResponse());
+  req.open("GET", url);
+  req.send();
+}
+//Вспомогательная функция для fnRequest(), парсинг полученной страницы формата JSON и получение необходимых параметров
+function renderResponse() {
+  var resp = JSON.parse(this.response);
+  console.log(resp.Date)
+  // var ul = document.getElementById('result');
+  //Очистка тела UL таблицы как способ обновления страницы для отображения содержимого директорий при переходе
+  // ul.innerHTML = '';
+  //
+  // console.log(resp)
+  // resp.VFSNode_struct.forEach(function (element) {
+      // var li = document.createElement("li");
+      // li.setAttribute("vfs_path", element.path);
+      // if (element.stat == "dir") {
+      //     li.innerHTML = '<span ><div class="results"><img src="/static/img/folder.png" width="1%">' + element.path + '</div></span>';
+      // }
+      // if (element.stat == "file") {
+      //     li.innerHTML = '<span ><div class="results"><img src="/static/img/file.png" width="1%">' + element.path + '</div></span>';
+      // }
+      //Записываем новый путь перехода по директории в переменную newUrl
+      // var newUrl = window.location.href + 'flag?root=' + element.path + '/';
+      // var root = resp.root;
+      // curPath(root);
+      // if (element.stat == "dir") {
+      //     li.addEventListener("click", function () {
+      //         fnRequest(newUrl);
+      //     }, false);
+      // }
+      // ul.appendChild(li);
+      // backURL = removeLastDirectoryPartOf(root);
+      // backURL = removeLastDirectoryPartOf(backURL);
+      // backURL = 'flag?root=' + backURL + '/';
+  // });
+}

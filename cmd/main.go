@@ -6,36 +6,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 )
 
 func main() {
-
+	loadConfig()
 	runServer()
-
-}
-
-//responseHandler() - функция обработки ответа
-func chartHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
-	// var tpl = template.Must(template.ParseFiles("index.html"))
-	// tpl.Execute(w, nil)
-	login := r.URL.Query().Get("login")
-
-	config := config.Read()
-	fmt.Println(&config)
-	model := model.New(&config)
-	returner, err := model.MakeBurndownChart(login)
-	if err != nil {
-		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
-	}
-	// fmt.Println(returner)
-	output, err := json.MarshalIndent(returner, "", "\t")
-	if err != nil {
-		fmt.Println("Can't Marshall JSON")
-	}
-	w.Write(output)
 
 }
 
@@ -59,19 +37,42 @@ func runServer() {
 	// }
 }
 
-//loadConfig() - функция загрузки файла конфигурации
-// func loadConfig() (*config.Config, error) {
-// 	err := config.Load(parseParams())
-// 	if err != nil {
-// 		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
-// 	}
-// 	config := config.Read()
-// 	return &config, err
-// }
+//responseHandler() - функция обработки ответа
+func chartHandler(w http.ResponseWriter, r *http.Request) {
+	// w.Header().Add("Content-Type", "application/json")
+	var tpl = template.Must(template.ParseFiles("./ui/html/index.html"))
+	tpl.Execute(w, nil)
+	login := r.URL.Query().Get("login")
+	config := config.Read()
+	fmt.Println(&config)
+	model := model.New(&config)
+	returner, err := model.MakeBurndownChart(login)
+	if err != nil {
+		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
+	}
+	// fmt.Println(returner)
+	output, err := json.MarshalIndent(returner, "", "\t")
+	if err != nil {
+		fmt.Println("Can't Marshall JSON", output)
+	}
+	w.Write(output)
+
+}
+
+// loadConfig() - функция загрузки файла конфигурации
+func loadConfig() (*config.Config, error) {
+	err := config.Load(parseParams())
+	if err != nil {
+		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
+	}
+	config := config.Read()
+	return &config, err
+}
 
 //parseParams() - функция получения расположения файла conf.ini. Задается с помощью флага -p в терминале перед запуском приложения.
 func parseParams() string {
 	configPath := flag.String("p", "", "path of src")
 	flag.Parse()
+	fmt.Println("parse")
 	return *configPath
 }
