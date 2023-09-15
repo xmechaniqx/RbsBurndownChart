@@ -63,6 +63,10 @@ func pgxConnDev(devLogin string) (*types.Developer, error) {
 
 		projectIDs = append(projectIDs, projectID)
 	}
+	if lastname == "" || firstname == "" {
+		fmt.Println("Have no developer")
+		return nil, err
+	}
 	//Заполняем структуру полученными значениями
 	resultStruct = types.Developer{
 		Id:       id,

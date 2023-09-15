@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 )
@@ -39,16 +38,15 @@ func runServer() {
 
 //responseHandler() - функция обработки ответа
 func chartHandler(w http.ResponseWriter, r *http.Request) {
-	// w.Header().Add("Content-Type", "application/json")
-	var tpl = template.Must(template.ParseFiles("./ui/html/index.html"))
-	tpl.Execute(w, nil)
+	w.Header().Add("Content-Type", "application/json")
 	login := r.URL.Query().Get("login")
 	config := config.Read()
-	fmt.Println(&config)
 	model := model.New(&config)
 	returner, err := model.MakeBurndownChart(login)
 	if err != nil {
 		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
+
+		return
 	}
 	// fmt.Println(returner)
 	output, err := json.MarshalIndent(returner, "", "\t")

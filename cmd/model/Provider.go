@@ -29,8 +29,8 @@ func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, err
 
 	//Чтение данных сотрудника из БД
 	developerObject, err := p.devs.Read(devLogin)
-	fmt.Println("developerObject.MakeBurndownChart", developerObject)
-	if err != nil {
+	// fmt.Println("developerObject.MakeBurndownChart", developerObject)
+	if err != nil || developerObject == nil {
 		return nil, fmt.Errorf("ошибка чтения объекта \"Developer\" из базы данных: %v", err)
 	}
 
