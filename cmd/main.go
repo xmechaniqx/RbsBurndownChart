@@ -29,26 +29,25 @@ func runServer() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// makeConfig, err := loadConfig()
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "Ошибка чтения файла конфигурации: %v\n", err)
-	// 	os.Exit(1)
-	// }
 }
 
 //responseHandler() - функция обработки ответа
 func chartHandler(w http.ResponseWriter, r *http.Request) {
+	//Задаем тип заголовка для отображаемой страницы
 	w.Header().Add("Content-Type", "application/json")
+	//Вычленяем логин из адресной строки
 	login := r.URL.Query().Get("login")
+	//Зачитываем файл конфигурации
 	config := config.Read()
+	//Реализуем объект имплементирующий интерфейсу taskReader
 	model := model.New(&config)
+	//Получаем структуру с параметрами необходимыми для передачи в javaScript
 	returner, err := model.MakeBurndownChart(login)
 	if err != nil {
 		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
-
 		return
 	}
-	// fmt.Println(returner)
+	//формируем JSON и отправляем на страницу "/chart?login..."
 	output, err := json.MarshalIndent(returner, "", "\t")
 	if err != nil {
 		fmt.Println("Can't Marshall JSON", output)

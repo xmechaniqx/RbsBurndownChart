@@ -9,18 +9,20 @@ import (
 	"github.com/jackc/pgx"
 )
 
-//Объект обращения к базе данных, параметр connSpec задан объектом Config пакета config.
+//Объект обращения к базе данных, параметр connSpec задан объектом Config пакета config
 type DBProject struct {
 	connSpec string
 	db       *pgx.Conn
 }
 
 //NewDBProject() инициализирует DBProject, и возвращает указатель на него.
-//Аргумент connSpec задаёт адрес для соединения с базой данных.
+//Аргумент connSpec задаёт адрес для соединения с базой данных
 func NewDBProject(connSpec string) *DBProject {
 	return &DBProject{}
 }
 
+// Read() реализует чтение данных по конкретному проекту исходя из параметра логина projectId, заданных
+// в структуре types.Project
 func (d *DBProject) Read(projectId int64) (*types.Project, error) {
 	return pgxConnProject(projectId)
 }

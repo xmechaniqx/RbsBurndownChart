@@ -52,12 +52,12 @@ func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, err
 	return burnDown, err
 }
 
-//makeDataSet() - функция принимает параметр ID проекта, обращается к базе данных и возвращает объект
+//makeDataSet() - функция принимает параметр ID проекта, обращается к базе данных и возвращает объект types.Dataset
 func (p *Provider) makeDataSet(projectId int64) (*types.Dataset, error) {
 
 	//Чтение проекта из БД
 	project, err := p.projects.Read(projectId)
-	// fmt.Println("project is", project)
+	//Проверка ошибок чтения
 	if err != nil {
 		return nil, fmt.Errorf("ошибка чтения объекта \"Project\" из базы данных: %v", err)
 	}
@@ -108,7 +108,7 @@ func (p *Provider) readProjectTeam(projectId int64) ([]types.Developer, error) {
 	return myTeamAll, err
 }
 
-//readWorkingHours() - функция возвращает производительность работника в соответсвии с недельным графиком
+//calkWorkingHours() - функция возвращает отображение в виде суммарной занятости сотрудников проекта по дням недели
 func (p *Provider) calkWorkingHours(devs []types.Developer) (map[string]int64, error) {
 	sumDayToHours := make(map[string]int64)
 	for _, developer := range devs {
@@ -120,7 +120,6 @@ func (p *Provider) calkWorkingHours(devs []types.Developer) (map[string]int64, e
 		sumDayToHours["Суббота"] += developer.WorkingHoursOfOne["Суббота"]
 		sumDayToHours["Воскресенье"] += developer.WorkingHoursOfOne["Воскресенье"]
 	}
-	fmt.Println("eto summa", sumDayToHours)
 	return sumDayToHours, nil
 }
 

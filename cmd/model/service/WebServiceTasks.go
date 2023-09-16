@@ -23,15 +23,15 @@ func (tr *WebServiceTasks) Read(p types.Project) ([]types.Task, error) {
 	mockTasks := []types.Task{
 		types.Task{
 			Title: "Dummy task web 1",
-			Cost:  3,
+			Cost:  30,
 		},
 		types.Task{
 			Title: "Dummy task web 2",
-			Cost:  1,
+			Cost:  12,
 		},
 		types.Task{
 			Title: "Dummy task web 2",
-			Cost:  1,
+			Cost:  46,
 		},
 	}
 	return mockTasks, nil

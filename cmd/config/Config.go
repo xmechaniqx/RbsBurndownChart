@@ -16,7 +16,7 @@ type Config struct {
 
 var conf *Config
 
-//Load() - функция обращается к файлу и записывает соответствующее объекту Config содержимое в структуру.
+//Load() - функция обращается к файлу конфигурации и записывает соответствующее объекту Config содержимое в структуру.
 func Load(configPath string) error {
 	if conf != nil {
 		return nil

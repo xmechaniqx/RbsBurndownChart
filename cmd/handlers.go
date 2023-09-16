@@ -16,6 +16,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	files := []string{
 		"./ui/html/index.html",
 	}
+	//Перебираем файлы и проверяем ошибки
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Println(err.Error())
