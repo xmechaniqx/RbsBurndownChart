@@ -38,6 +38,8 @@ func pgxConnDev(devLogin string) (*types.Developer, error) {
 	var projectIDs []int64
 	var lastname, firstname, position string
 	resultStruct := types.Developer{}
+	resultMapHours := make(map[string]int64)
+	var mon, tue, wed, thu, fri, sat, sun int64
 	//Подключаемся к базе данных
 	conn, err := pgx.Connect(context.Background(), "postgres://admin:1234@localhost:5432/burndown_db")
 	if err != nil {
@@ -46,34 +48,44 @@ func pgxConnDev(devLogin string) (*types.Developer, error) {
 	}
 	defer conn.Close(context.Background())
 	//Считываем необходимые параметры для всей заданной таблицы, проверяем ошибки
-	all, err := conn.Query(context.Background(), "SELECT dev.c_id, toc.fk_project, dev.c_lastname, dev.c_firstname, tref.c_name	FROM t_developer AS dev	LEFT JOIN t_ref_position AS tref ON dev.fk_position = tref.c_id	LEFT JOIN toc_project_developer AS toc ON dev.c_id = toc.fk_developer WHERE dev.c_login =$1", devLogin)
+	all, err := conn.Query(context.Background(), "SELECT dev.c_id, toc.fk_project, dev.c_lastname, dev.c_firstname, tref.c_name, dev.c_mon_hour, dev.c_tue_hour, dev.c_wed_hour,	dev.c_thu_hour, dev.c_fri_hour, dev.c_sat_hour, dev.c_sun_hour FROM t_developer AS dev LEFT JOIN t_ref_position AS tref ON dev.fk_position = tref.c_id	LEFT JOIN toc_project_developer AS toc ON dev.c_id = toc.fk_developer WHERE dev.c_login =$1", devLogin)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow for one Developer failed: %v\n", err)
 		os.Exit(1)
 	}
 	//Цикл чтения строк таблицы и запись данных в структуру taskStruct, далее заполненяем массив объектов полученной структурой
 	for all.Next() {
-		err := all.Scan(&id, &projectID, &lastname, &firstname, &position)
+		err := all.Scan(&id, &projectID, &lastname, &firstname, &position, &mon, &tue, &wed, &thu, &fri, &sat, &sun)
 		if err != nil {
 			fmt.Println("next error")
 		}
 		if all.Err() != nil {
 			fmt.Println("scan error")
 		}
-
+		resultMapHours = map[string]int64{
+			"Понедельник": mon,
+			"Вторник":     tue,
+			"Среда":       thu,
+			"Четверг":     wed,
+			"Пятница":     fri,
+			"Суббота":     sat,
+			"Воскресенье": sun,
+		}
 		projectIDs = append(projectIDs, projectID)
 	}
 	if lastname == "" || firstname == "" {
 		fmt.Println("Have no developer")
 		return nil, err
 	}
+	// fmt.Println("eto karta", resultMapHours)
 	//Заполняем структуру полученными значениями
 	resultStruct = types.Developer{
-		Id:       id,
-		Projects: projectIDs,
-		FullName: lastname + " " + firstname,
-		Login:    devLogin,
-		Position: position,
+		Id:                id,
+		Projects:          projectIDs,
+		FullName:          lastname + " " + firstname,
+		Login:             devLogin,
+		Position:          position,
+		WorkingHoursOfOne: resultMapHours,
 	}
 	return &resultStruct, err
 }

@@ -111,24 +111,16 @@ func (p *Provider) readProjectTeam(projectId int64) ([]types.Developer, error) {
 //readWorkingHours() - функция возвращает производительность работника в соответсвии с недельным графиком
 func (p *Provider) calkWorkingHours(devs []types.Developer) (map[string]int64, error) {
 	sumDayToHours := make(map[string]int64)
-	// for _, developer := range devs {
-	// 	someDevs:=db.NewDBDeveloper()
-
-	sumDayToHours["mon"] += 8
-	sumDayToHours["tue"] += 8
-	sumDayToHours["wed"] += 6
-	sumDayToHours["thu"] += 3
-	sumDayToHours["fri"] += 7
-	sumDayToHours["sat"] += 0
-	sumDayToHours["sun"] += 0
-	// }
-	// sumDayToHours["mon"]+=db.DBDeveloper...SELECT FROM c_mon_hour
-	// sumDayToHours["tue"]+=db.DBDeveloper...SELECT FROM c_tue_hour
-	// sumDayToHours["wed"]+=db.DBDeveloper...SELECT FROM c_wed_hour
-	// sumDayToHours["thu"]+=db.DBDeveloper...SELECT FROM c_thu_hour
-	// sumDayToHours["fri"]+=db.DBDeveloper...SELECT FROM c_fri_hour
-	// sumDayToHours["sat"]+=db.DBDeveloper...SELECT FROM c_sat_hour
-	// sumDayToHours["sun"]+=db.DBDeveloper...SELECT FROM c_sun_hour
+	for _, developer := range devs {
+		sumDayToHours["Понедельник"] += developer.WorkingHoursOfOne["Понедельник"]
+		sumDayToHours["Вторник"] += developer.WorkingHoursOfOne["Вторник"]
+		sumDayToHours["Среда"] += developer.WorkingHoursOfOne["Среда"]
+		sumDayToHours["Четверг"] += developer.WorkingHoursOfOne["Четверг"]
+		sumDayToHours["Пятница"] += developer.WorkingHoursOfOne["Пятница"]
+		sumDayToHours["Суббота"] += developer.WorkingHoursOfOne["Суббота"]
+		sumDayToHours["Воскресенье"] += developer.WorkingHoursOfOne["Воскресенье"]
+	}
+	fmt.Println("eto summa", sumDayToHours)
 	return sumDayToHours, nil
 }
 
