@@ -43,6 +43,7 @@ func pgxConnDev(devLogin string) (*types.Developer, error) {
 	var mon, tue, wed, thu, fri, sat, sun int64
 	resultMapHours := make(map[string]int64)
 	//Подключаемся к базе данных
+	// TODO:
 	conn, err := pgx.Connect(context.Background(), "postgres://admin:1234@localhost:5432/burndown_db")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
@@ -77,8 +78,7 @@ func pgxConnDev(devLogin string) (*types.Developer, error) {
 		projectIDs = append(projectIDs, projectID)
 	}
 	if lastname == "" || firstname == "" {
-		fmt.Println("Have no developer")
-		return nil, err
+		return nil, fmt.Errorf("have no developer %s", devLogin)
 	}
 	//Заполняем структуру полученными значениями
 	resultStruct = types.Developer{

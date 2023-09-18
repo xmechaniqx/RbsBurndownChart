@@ -33,7 +33,7 @@ func (tr *WebServiceTasks) Read(p types.Project) ([]types.Task, error) {
 	//Инициализируем новый массив объектов типа types.Task
 	mockTasks := []types.Task{}
 	//Совершаем запрос на сервер в соответсвии с данными из структуры WebServiceTask, которая в свою очередь сконфигурирована из файла config
-	r, err := tr.client.Get(tr.host + tr.port)
+	r, err := tr.client.Get(fmt.Sprintf("%s:%s", tr.host, tr.port))
 	if err != nil {
 		return nil, err
 	}

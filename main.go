@@ -74,12 +74,11 @@ func readLines(path string) ([]Task, error) {
 		out := rex.FindAllStringSubmatch(line, -1)
 		line = strings.TrimRight(line, "()+1234567890")
 		line = strings.TrimLeft(line, ".()+1234567890")
-		fmt.Println("rex", rex, "out", out, "line", line)
+		// fmt.Println("rex", rex, "out", out, "line", line)
 		//Приводим полученное число из строки в int
 		for _, i := range out {
 			resInt, err = strconv.Atoi(i[1])
 			if err != nil {
-				fmt.Println("Ошибка конвертации STRING to INT", err)
 			}
 		}
 		//Записываем полученные значения в структуру

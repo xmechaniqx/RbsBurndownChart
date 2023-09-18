@@ -35,9 +35,8 @@ func (p *Provider) MakeBurndownChart(devLogin string) (*types.Burndownchart, err
 	}
 
 	//Заполняем DataSet в зависимости от количества связанных с сотрудником проектов
-	for i := 0; i < len(developerObject.Projects); i++ {
-		dataSet, err := p.makeDataSet(developerObject.Projects[i])
-
+	for _, project := range developerObject.Projects {
+		dataSet, err := p.makeDataSet(project)
 		if err != nil {
 			return nil, fmt.Errorf("ошибка сборки объекта \"dataSet\": %v", err)
 		}
