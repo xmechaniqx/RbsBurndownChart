@@ -49,6 +49,7 @@ func readLines(path string) ([]types.Task, error) {
 		return []types.Task{}, err
 	}
 	defer file.Close()
+	//Построчное сканирование файла
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line = scanner.Text()
@@ -61,7 +62,7 @@ func readLines(path string) ([]types.Task, error) {
 		for _, i := range out {
 			resInt, err = strconv.Atoi(i[1])
 			if err != nil {
-				fmt.Println("Ошибка конвертации STRING to INT")
+				fmt.Println("Ошибка конвертации STRING to INT", err)
 			}
 		}
 		//Записываем полученные значения в структуру
