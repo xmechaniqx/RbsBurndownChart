@@ -44,7 +44,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 	returner, err := readLines("/home/username/go/src/RbsBurndownChart/tasks/group_3.txt")
 	if err != nil {
-		fmt.Println("Ошибка чтения файла веб-сервер")
+		fmt.Printf("Ошибка чтения файла веб-сервер: %s", err)
 	}
 	output, err := json.MarshalIndent(returner, "", "\t")
 	if err != nil {

@@ -46,7 +46,7 @@ func readLines(path string) ([]types.Task, error) {
 	//Чтение файла
 	file, err := os.Open(path)
 	if err != nil {
-		return []types.Task{}, err
+		return nil, fmt.Errorf("ошибка чтения файла %s:%s", path, err)
 	}
 	defer file.Close()
 	//Построчное сканирование файла
@@ -62,7 +62,7 @@ func readLines(path string) ([]types.Task, error) {
 		for _, i := range out {
 			resInt, err = strconv.Atoi(i[1])
 			if err != nil {
-				fmt.Println("Ошибка конвертации STRING to INT", err)
+				return nil, fmt.Errorf("ошибка конвертации STRING to INT %s:%s", path, err)
 			}
 		}
 		//Записываем полученные значения в структуру

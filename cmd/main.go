@@ -3,17 +3,28 @@ package main
 import (
 	"RbsBurndownChart/cmd/config"
 	"RbsBurndownChart/cmd/model"
+	"RbsBurndownChart/cmd/types"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
-func main() {
-	loadConfig()
-	runServer()
+type Response struct {
+	Status        int8
+	Error         string
+	BurndownChart *types.Burndownchart
+}
 
+func main() {
+	_, err := loadConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	runServer()
 }
 
 //runServer() - функция запуска сервера
@@ -42,25 +53,34 @@ func chartHandler(w http.ResponseWriter, r *http.Request) {
 	//Реализуем объект имплементирующий интерфейсу taskReader
 	model := model.New(&config)
 	//Получаем структуру с параметрами необходимыми для передачи в javaScript
+	outResponse := Response{}
 	returner, err := model.MakeBurndownChart(login)
 	if err != nil {
-		fmt.Printf("ошибка чтения объекта \"MakeBurndownChart\" из базы данных: %v\n", err)
-		return
+		outResponse = Response{
+			Status:        1,
+			Error:         "Ошибка! Неверный логин",
+			BurndownChart: returner,
+		}
+	} else {
+		outResponse = Response{
+			Status:        0,
+			Error:         "",
+			BurndownChart: returner,
+		}
 	}
 	//формируем JSON и отправляем на страницу "/chart?login..."
-	output, err := json.MarshalIndent(returner, "", "\t")
+	output, err := json.MarshalIndent(outResponse, "", "\t")
 	if err != nil {
 		fmt.Println("Can't Marshall JSON", output)
 	}
 	w.Write(output)
-
 }
 
 // loadConfig() - функция загрузки файла конфигурации
 func loadConfig() (*config.Config, error) {
 	err := config.Load(parseParams())
 	if err != nil {
-		fmt.Println("MAIN - Ошибка чтения файла config или пути configPath")
+		return nil, fmt.Errorf("error of load config: %s", err)
 	}
 	config := config.Read()
 	return &config, err
@@ -70,6 +90,5 @@ func loadConfig() (*config.Config, error) {
 func parseParams() string {
 	configPath := flag.String("p", "", "path of src")
 	flag.Parse()
-	fmt.Println("parse")
 	return *configPath
 }

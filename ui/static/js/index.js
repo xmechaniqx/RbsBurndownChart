@@ -1,45 +1,61 @@
+document.addEventListener("DOMContentLoaded", function() {
+  fnRequest(url);
+});
+
 //Инициализируем параметр со значением текущей ссылки из адресной строки
 const urlParams = new URLSearchParams(window.location.search);
 //Получаем логин из полученного параметра
 const login = urlParams.get('login');
 //Формируем ссылку добавляя адрес хэндлера /chart
-let url = 'http://'+window.location.host+'/chart?login='+login
-let today = new Date().toISOString().slice(0, 10)
-// console.log(today)
-let allProjectsForDeveloper = []
-let allStruct = []
-let datasetsArr = []
-fnRequest(url)
+let url = 'http://'+window.location.host+'/chart?login='+login;
+//Объявляем массивы для заполнения итоговой структуры графика
+let allProjectsForDeveloper = [];  //массив состоящий из всех проектов для конкретного пользователя
+let nameProject = [];              //массив наименований проектов
+let structResult = new Object;     //объект собирающий все исходные параметры
+let datasetsArr = [];              //массив объектов dataset
+let arrOfProjects = [];            //массив объектов structResult
 
-const dayOfMonth = 31
+//getDaysInMonth() - функция возвращает количество дней в текущем месяце
+function getDaysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+const date = new Date();
+const currentYear = date.getFullYear();
+const currentMonth = date.getMonth() + 1;
+const daysInCurrentMonth = getDaysInMonth(currentYear,currentMonth);
 
 //renderChart() - функция формирует и выводит график на странице на основании полученной структуры
 function renderChart(structsEntered) {
-  console.log(structsEntered);
   const ctx = document.getElementById('myChart');
-  const date = new window.Date();  
-  const month = date.toLocaleString('default', { month: 'short' });
-  // const day = date.toLocaleString('default', { day: "numeric" });
+  let daysOfWeek = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
   let labels = [];
+  let looper = 0;
+
   //Формируем массив дней месяца для актуального месяца
-  for (i = 1; i < dayOfMonth; i++) {
-    labels.push(i+' '+month)
+  for (i = 0; i < daysInCurrentMonth; i++) {
+    //looper сбрасывается каждый раз когда массив заполнен всеми днями недели
+    if (looper>6){
+      looper=0;
+    }
+    labels.push(daysOfWeek[looper])
+    looper++;
   } 
   //Заполняем структуру dataset из полученного объекта
-  for (i = 0; i < structsEntered.length; i++) {
-    struct=structsEntered[i]
-    let dataset = {
+  structsEntered.projects.forEach(struct => {
+    let dataset = new Object;
+    dataset = {
       label: struct.nameProject,
-      data: struct.burnDownDays,
+    data: struct.burnDownDays,
       borderWidth: 2,
       borderColor: struct.color,
       backgroundColor: [struct.color],
       tension: 0,
       fill: false
-    }
+    };
     //Заполняем массив полученными структурами
     datasetsArr.push(dataset)
-  }
+  });
+
   //Создаем новую функцию отображения графика
   new Chart(ctx, {
     type: 'line',
@@ -48,17 +64,12 @@ function renderChart(structsEntered) {
           datasets: datasetsArr
           },
     options: {
-      scales: {
-        x: {
-            min: struct.SprintStartDate,
-        }
-      },
-        responsive: true,
-        plugins: {colors: {enabled: false},legend: {position: 'top'},
-        title: {display: true, text: 'Chart.js Line Chart'}
-        }
+          responsive: true,
+          plugins: {colors: {enabled: false},legend: {position: 'top'},
+          title: {display: true, text: 'Chart.js Line Chart'}
+          }
     }
-  }) 
+  });
 }
 
 //fnRequest() - функция создает запрос на заданный адрес
@@ -71,68 +82,71 @@ function fnRequest(someUrl) {
 //Вспомогательная функция для fnRequest(), парсинг полученной страницы формата JSON и получение необходимых параметров
 function renderResponse() {
   let resp = JSON.parse(this.response);
+  //В случае получения параметра ошибки 1 выводим на странице сообщение иначе продолжаем обработку
+  if (resp.Status==1){
+      document.write('<b><font size="5">'+resp.Error+'</font></b>');
+      return
+  }
   //В цикле формируем объекты данных из полученной исходной структуры
-  for (j = 0; j < resp.Charts.length; j++) {
-    let sprintDate = resp.Charts[j].Project.SprintStartDate
-    let tasksCostSum = resp.Charts[j].TasksCostSum
-    let hours =  new Array
-    let burnDownDays = new Array
+  resp.BurndownChart.Charts.forEach(element => {
+    let tasksCostSum = element.TasksCostSum;
+    let hours =  new Array;
+    //burnDownDays - массив убывания исходного времени для проекта в зависимости от производительности команды
+    let burnDownDays = new Array;
 
-    burnDownDays.push(tasksCostSum)
+    burnDownDays.push(tasksCostSum);
     //В ходе цикла получаем отображения рабочего времени по дням недели
-    for (value in resp.Charts[j].WorkingHours) {
-      hours.push(resp.Charts[j].WorkingHours['Понедельник']);
-      hours.push(resp.Charts[j].WorkingHours['Вторник']);
-      hours.push(resp.Charts[j].WorkingHours['Среда']);
-      hours.push(resp.Charts[j].WorkingHours['Четверг']);
-      hours.push(resp.Charts[j].WorkingHours['Пятница']);
-      hours.push(resp.Charts[j].WorkingHours['Суббота']);
-      hours.push(resp.Charts[j].WorkingHours['Воскресенье']);
+    for (value in element.WorkingHours) {
+      hours.push(element.WorkingHours['Понедельник']);
+      hours.push(element.WorkingHours['Вторник']);
+      hours.push(element.WorkingHours['Среда']);
+      hours.push(element.WorkingHours['Четверг']);
+      hours.push(element.WorkingHours['Пятница']);
+      hours.push(element.WorkingHours['Суббота']);
+      hours.push(element.WorkingHours['Воскресенье']);
     }
-
     while (tasksCostSum > 0) {
       for (i = 0; i < hours.length; i++) {
-        tasksCostSum = tasksCostSum - hours[i]
+        tasksCostSum = tasksCostSum - hours[i];
           if (tasksCostSum <= 0) {
             tasksCostSum = 0
-            burnDownDays.push(tasksCostSum)
+            burnDownDays.push(tasksCostSum);
             break
           } else {
-            burnDownDays.push(tasksCostSum)
+            burnDownDays.push(tasksCostSum);
           }
       }
     }
-
-    let structResult = {     // объект
-      name: resp.Developer.FullName,  // под ключом "name" хранится значение "John"
-      position: resp.Developer.Position,
-      nameProject: resp.Charts[j].Project.Name,
+    project = {
+      nameProject: element.Project.Name,
       burnDownDays: burnDownDays,
-      sprintDate: sprintDate,
+      sprintDate: element.Project.SprintStartDate,
       color: generateNewColor()
-    };
-    allStruct.push(structResult)
-  }  
-  
-  document.getElementById("Name").innerHTML = allStruct[0].name;
-  document.getElementById("Position").innerHTML = allStruct[0].position;
-
-  for(i = 0; i < allStruct.length; i++) { 
-    allProjectsForDeveloper.push(' ' + allStruct[i].nameProject)
-  }
-  document.getElementById("Project").innerHTML = allProjectsForDeveloper
-  renderChart(allStruct)
-}
-
+    }
+    arrOfProjects.push(project); 
+  });
+  structResult = {
+    name: resp.BurndownChart.Developer.FullName,
+    position: resp.BurndownChart.Developer.Position,
+    projects: arrOfProjects,
+    
+  };
+  document.getElementById("Name").innerHTML = structResult.name;
+  document.getElementById("Position").innerHTML = structResult.position;
+  structResult.projects.forEach(name => {
+    allProjectsForDeveloper.push(' ' + name.nameProject);
+  });
+  document.getElementById("Project").innerHTML = allProjectsForDeveloper;
+  renderChart(structResult);
+};
+//generateNewColor() - функция позволяет случайным образом сгенерировать цвет
 const hexCharacters = [0,1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F"]
-
-//
 function generateNewColor() {
-	let hexColorRep = "#"
-	for (let index = 0; index < 6; index++){
-		const randomPosition = Math.floor ( Math.random() * hexCharacters.length ) 
-    hexColorRep += hexCharacters[randomPosition]
+	let hexColorRep = "#";
+	for (let index = 0; index < 6; index++) {
+		const randomPosition = Math.floor ( Math.random() * hexCharacters.length );
+    hexColorRep += hexCharacters[randomPosition];
 	}
 	return hexColorRep
-}
+};
 

@@ -33,6 +33,7 @@ func (tr *taskReaderFactory) Make(project *types.Project) taskReader {
 		return db.NewDBTasks(tr.config.DBConnSpec)
 	case project.TasksSource == types.Service:
 		return service.New(tr.config.ServiceHost, tr.config.ServicePort)
+	default:
+		return nil
 	}
-	return nil
 }

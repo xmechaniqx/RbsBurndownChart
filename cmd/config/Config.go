@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 
 	"gopkg.in/ini.v1"
 )
@@ -21,16 +22,23 @@ func Load(configPath string) error {
 	if conf != nil {
 		return nil
 	}
+	check_file, err := os.Stat(configPath)
+	if err != nil {
+		return fmt.Errorf("ошибка чтения структуры файла config, файл поврежден")
+	}
+	if check_file.Size() == 0 {
+		return fmt.Errorf("файл конфигурации пуст или повреждён")
+	}
 	cfg, err := ini.Load(configPath)
 	if err != nil {
-		fmt.Println("CONFIG - Ошибка чтения файла config или пути configPath", err)
+		return fmt.Errorf("CONFIG - Ошибка чтения файла config: %s", err)
 	}
 	conf = &Config{
 		DBConnSpec:  cfg.Section("").Key("DBConnSpec").String(),
 		ServiceHost: cfg.Section("").Key("ServiceHost").String(),
 		ServicePort: cfg.Section("").Key("ServicePort").String(),
 	}
-	return nil
+	return err
 }
 
 //Read() - функция реализует чтение данных из структуры Config из пакетной переменной conf.
